@@ -1,0 +1,1 @@
+export * from './envs'; // Export the envs object from the envs.ts file

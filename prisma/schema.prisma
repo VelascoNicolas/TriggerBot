@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model messages {
+  id                    String    @id @default(dbgenerated("gen_random_uuid()"))
+  deletedAt             DateTime? @default("9999-12-12T00:00:00.000Z")
+  createdAt             DateTime? @default(now())
+  updatedAt             DateTime? @updatedAt()
+  available             Boolean   @default(true)
+
+  body                  String
+  trigger               String    @unique
+  ending                Boolean   @default(false)
+
+  enterpriseId          String
+  enterprise            enterprises @relation(fields: [enterpriseId], references: [id])
+}
+
+model enterprises {
+  id                    String    @id @default(dbgenerated("gen_random_uuid()"))
+  deletedAt             DateTime? @default("9999-12-12T00:00:00.000Z")
+  createdAt             DateTime? @default(now())
+  updatedAt             DateTime? @updatedAt
+  available             Boolean @default(true)
+
+  name                  String
+  clientId              String?
+
+  messages              messages[]
+}
+
+model prompt {
+  id                    String    @id @default(dbgenerated("gen_random_uuid()"))
+  deletedAt             DateTime? @default("9999-12-12T00:00:00.000Z")
+  createdAt             DateTime? @default(now())
+  updatedAt             DateTime? @updatedAt
+  available             Boolean @default(true)
+
+  body                  String
+  enterpriseId          String
+}
